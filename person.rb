@@ -10,19 +10,27 @@ class Person
   CHANCE_TO_MARRY = 0.8
   MIN_AGE_TO_MARRY = 18
   CHANCE_TO_BE_MALE = 0.5
+  
+  @@person_id = 0 
 
   def initialize(civ)  
     puts "new Person"
     # Instance variables  
     @age = 0  
-    @tt = civ.tmp
-    puts "tt",@tt
+    @@person_id+=1
+    @id = @@person_id
     @married = false
     @is_male = rand < CHANCE_TO_BE_MALE
     @spouse = nil
     @kids = []
     @alive = true 
+    @mother_civ = civ
   end  
+
+  def add_kids
+    @kids.push(@mother_civ.add_person)
+    puts "adding kids : ",@kids
+  end
   
   def is_married?
     @married
@@ -42,8 +50,9 @@ class Person
     rand < CHANCE_TO_HAVE_KIDS
   end
 
-  def add_kids
-    
+  def dump_person
+    print "person dump : ",self," id : ",@id
+    puts
   end
 
   def add_spouse
