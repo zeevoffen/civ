@@ -8,8 +8,18 @@ class Civ
 	  @p.push(Person.new(self))
     end
     
+    def find_match(for_male)
+      @p.each {|per| return per if 
+                per.ready_for_marriage and
+                per.is_male != for_male}
+    end
+
     def dump_civ
     	puts "civ :",@p.each {|per| per.dump_person}
+    end
+
+    def get_total_civ
+    	@p[0].get_total_persons
     end
 
     def add_person
@@ -31,4 +41,4 @@ end
 c = Civ.new()
 c.get_person(0).add_kids
 puts c.dump_civ
-
+puts "total population:",c.get_total_civ

@@ -12,14 +12,14 @@ class Person
   CHANCE_TO_BE_MALE = 0.5
   
   @@person_id = 0 
+  @@total_persons = 0
 
   def initialize(civ)  
-    puts "new Person"
-    # Instance variables  
+    puts "new Person"  
     @age = 0  
     @@person_id+=1
+    @@total_persons+=1
     @id = @@person_id
-    @married = false
     @is_male = rand < CHANCE_TO_BE_MALE
     @spouse = nil
     @kids = []
@@ -31,9 +31,13 @@ class Person
     @kids.push(@mother_civ.add_person)
     puts "adding kids : ",@kids
   end
+
+  def get_total_persons
+    @@total_persons
+  end
   
   def is_married?
-    @married
+    @spouse != nil
   end
 
   def is_alive?
@@ -56,19 +60,26 @@ class Person
   end
 
   def add_spouse
+    @spouse = @mother_civ.find_match(@is_male) 
+  end
 
+  def ready_for_marriage
+    @age>=MIN_AGE_TO_MARRY and
+    rand < CHANCE_TO_MARRY
   end
 
   def update_age(age_inc_in_years)
-    alive = false if need_to_die? 
+    alive = false if need_to_die?
+    @@total_persons-=1 unless alive 
     return unless is_alive? 
     age+=age_inc_in_years unless age>=MAX_AGE
     add_kids if can_have_kids?
-    add_spouse unless is_married?
-
+    add_spouse unless is_married? or not ready_for_marriage
   end
 
   def display  
     puts "I am of age #{@age} kids #{@kids}"  
-  end  
+  end
+
+    
 end  
