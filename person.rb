@@ -29,7 +29,7 @@ class Person
 
   def add_kids
     @kids.push(@mother_civ.add_person)
-    puts "adding kids : ",@kids
+    #puts "adding kids : ",@kids
   end
 
   def get_total_persons
@@ -55,7 +55,9 @@ class Person
   end
 
   def dump_person
-    print "person dump : ",self," id : ",@id
+    print "person dump : "," id : ",@id, " age:",@age ," number of kids: ", @kids.size, " alive:",@alive
+    #print "DUMP : ", self.to_s 
+    #p self
     puts
   end
 

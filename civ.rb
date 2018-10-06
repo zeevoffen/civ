@@ -15,7 +15,9 @@ class Civ
     end
 
     def dump_civ
-    	puts "civ :",@p.each {|per| per.dump_person}
+    	@p.each {|per| per.dump_person}
+    	print "total population:",get_total_civ
+    	puts
     end
 
     def get_total_civ
@@ -32,13 +34,13 @@ class Civ
     	@p[i]
     end
 
-    def tmp
-    	787
+    def advance_n_years(n_years)
+    	
     end
 
 end
 
 c = Civ.new()
 c.get_person(0).add_kids
-puts c.dump_civ
-puts "total population:",c.get_total_civ
+c.dump_civ
+
