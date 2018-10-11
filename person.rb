@@ -24,7 +24,7 @@ class Person
     @kids = []
     @alive = true 
     @mother_civ = civ
-    $logger.info "new person created with id #{@id} male? #{@is_male}"
+    $logger.debug "new person created with id #{@id} male? #{@is_male}"
   end  
 
   def add_kids
@@ -45,8 +45,13 @@ class Person
   end
 
   def need_to_die?
-    rand < (@age.to_f/(2*MAX_AGE.to_f)) or
-    @age >= MAX_AGE
+    return true if @age>=MAX_AGE
+    return rand < 0.01 if @age<10
+    return rand < 0.05 if @age<30
+    return rand < 0.09 if @age<40
+    return rand < 0.11 if @age<50
+    return rand < 0.15 if @age<60
+    return rand < 0.20
   end
   def can_have_kids?
     @age<=MAX_AGE_TO_HAVE_KIDS and 
@@ -66,7 +71,7 @@ class Person
 
   def add_spouse
     @spouse = @mother_civ.find_match(@is_male) 
-    $logger.info "spouse search for #{self} yield:#{@spouse}"
+    $logger.debug "spouse search for #{self} yield:#{@spouse}"
   end
 
   def get_age
@@ -80,23 +85,24 @@ class Person
   end
 
   def family_size
-    @kids.size 
+    is_family ? @kids.size : 0 
   end
 
   def is_family
-    @kids.size>0 or
-    not is_married?
+    is_alive? and
+    ((@kids.size>0) or
+    (@kids.size==0 and is_married? and is_male?) or
+    (not is_married? and ready_for_marriage))
   end
 
   def update_age(age_inc_in_years)
     return unless is_alive?
     @alive = false if need_to_die?
     @@total_persons-=1 unless @alive
-    $logger.info "Id #{@id} died at age #{@age}" unless is_alive?
+    $logger.debug "Id #{@id} died at age #{@age}" unless is_alive?
     return unless is_alive? 
     @age+=age_inc_in_years unless @age>=MAX_AGE
-    #puts "age->#{@age}"
-    $logger.info "update_age==>#{self} current age : #{@age}"
+    $logger.debug "update_age==>#{self} current age : #{@age}"
     add_kids if can_have_kids?
     add_spouse unless is_married? or not ready_for_marriage
   end

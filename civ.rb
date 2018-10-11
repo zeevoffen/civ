@@ -1,26 +1,30 @@
 require_relative "person.rb"
 require 'logger'
 
-$logger = Logger.new("log.txt")
+
+file = File.open('civ.log', File::WRONLY | File::APPEND | File::CREAT)
+$logger = Logger.new(file)
 $logger.level = Logger::INFO
+$logger.formatter = proc do |severity, datetime, progname, msg|
+  "DEBUG: #{msg}\n"
+end
 
-
-NUM_INITIAL_PERSONS = 100
 
 class Civ
 	
-	def initialize
+	def initialize(num_persons)
+      @num_persons = 100
 	  $logger.info "new civ" 
 	  @p = []
-	  (1..NUM_INITIAL_PERSONS).each {@p.push(Person.new(self))}
+	  (1..@num_persons).each {@p.push(Person.new(self))}
       @@year = 0
-      @civ_total_alive = NUM_INITIAL_PERSONS
+      @civ_total_alive = num_persons
       @civ_total_dead = 0
     end
     
     def find_match(for_male)
       @p.each  do |per|  
-            $logger.info("find_match : searching match for male? #{for_male} cehcking #{per} age #{per.get_age} male? #{per.is_male?} is married ? #{per.is_married?}")
+            $logger.debug("find_match : searching match for male? #{for_male} cehcking #{per} age #{per.get_age} male? #{per.is_male?} is married ? #{per.is_married?}")
             if   per.ready_for_marriage and
                 ((per.is_male?  and not for_male) or
                  (not per.is_male?  and for_male)) then
